@@ -1,70 +1,61 @@
 import { useState } from "react";
 import "./style/form.module.css"
+import Card from "./Card";
 
 const Form = () => {
 
-	const [alumno, setAlumno] = useState({
-		name: '',
-		address: '',
-		dni: "",
-		materia: "",
+	const [banda, setBanda] = useState({
+		cantante: '',
+		nombre: '',
 	})
+
 	const [error, setError] = useState(false);
-	const [mostrar, setmostrar] = useState(false)
+	const [mostrar, setMostrar] = useState(false);
+	const [formulario, setFormulario] = useState(true);
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		console.log("Handle Submit");
-		if (
-			alumno.nombre.length > 3 &&
-			alumno.apellido.length > 3 &&
-			alumno.dni.length == 8 
-		) {
-			console.log("valido")
-			setmostrar(true);
-			setError(false)
-		} else {
+		console.log(banda.cantante + " " + banda.nombre);
+		if (banda.cantante[0] === " " || banda.cantante.length < 3 || banda.nombre.length < 6) {
+			console.log("error en los imputs.")
 			setError(true)
-			console.log("error")
-
+		} else {
+			setError(false);
+			setMostrar(true);
+			setFormulario(false);
+			console.log("Validación Correcta")
 		}
 	}
 
-
-
-
-
-
-
+	const reintentar = () => {
+		setError(false);
+	}
 
 	return (
 		<>
 			{
-				mostrar ? null : <form action="#" method="post" id="miFormulario" onSubmit={handleSubmit}>
-					<label htmlFor="nombre">Nombre:</label>
-					<input type="text" id="nombre" name="nombre" required  onChange={(event) => setAlumno({...alumno, nombre: event.target.value})}/>
-
-					<label htmlFor="apellido">Apellido:</label>
-					<input type="text" id="apellido" name="apellido" required  onChange={(event) => setAlumno({...alumno, apellido: event.target.value})} />
-
-					<label htmlFor="dni">DNI:</label>
-					<input type="text" id="dni" name="dni" required onChange={(event) => setAlumno({...alumno, dni: event.target.value})} />
-
-					<label htmlFor="materia">Materia:</label>
-					<input type="text" id="materia" name="materia"   onChange={(event) => setAlumno({...alumno, materia: event.target.value})}/>
-
-					<button type="submit">Enviar</button>
+				formulario &&
+				<form>
+					<label >Cantante:</label>
+					<input type="text" id="nombre" name="nombre" placeholder="Ingresa el nombre del cantante" required
+						onChange={(event) => { setBanda({ ...banda, cantante: event.target.value }) }} />
+					<label >Banda:</label>
+					<input type="text" id="nombre" name="nombre" placeholder="Ingresa nombre el nombre de la banda" required
+						onChange={(event) => { setBanda({ ...banda, nombre: event.target.value }) }} />
+					<button onClick={handleSubmit}>Enviar</button>
+					{error &&
+						<button onClick={() => { reintentar }}>Reintentar</button>
+					}
 				</form>
 			}
 			{
-				mostrar ?
-					<h3>Se agrego el Alumno: {alumno.nombre}</h3> :
-					<p>Ingrese los datos del alumno.</p>
+				error && <p>Por favor chequea que la información sea correcta.</p>
 			}
 			{
-				error && <p>Verifique los datos ingresados.</p>
+				mostrar && <Card props={banda} />
 			}
 		</>
 	)
 }
+
 export default Form;
